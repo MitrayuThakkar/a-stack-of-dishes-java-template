@@ -4,11 +4,94 @@
 package org.example;
 
 public class App {
-    public String getGreeting() {
-        return "Hello World!";
+
+    /** Inner class that actually implements the stack. */
+    public static class DishStack {
+        private static final int DEFAULT_CAPACITY = 10;
+        private final Dish[] data;
+        private int top; // index of next empty slot (also the current size)
+
+        /** Constructs a stack with the default capacity (10). */
+        public DishStack() {
+            this(DEFAULT_CAPACITY);
+        }
+
+        /** Constructs a stack with a specific maximum capacity. */
+        public DishStack(int capacity) {
+            data = new Dish[capacity];
+            top  = 0;
+        }
+
+        /** Pushes a dish onto the stack if space is available. */
+        public void push(Dish dish) {
+            if (top == data.length) {
+                System.out.println("Stack full – cannot push another dish.");
+                return;
+            }
+            data[top++] = dish;
+        }
+
+        /** Pops (removes and returns) the top dish; returns null if empty. */
+        public Dish pop() {
+            if (top == 0) {
+                System.out.println("Stack empty – nothing to pop.");
+                return null;
+            }
+            Dish dish = data[--top];
+            data[top] = null;          // avoid loitering
+            return dish;
+        }
+
+        /** Peeks (returns without removing) the top dish; null if empty. */
+        public Dish peek() {
+            if (top == 0) {
+                System.out.println("Stack empty – nothing to peek.");
+                return null;
+            }
+            return data[top - 1];
+        }
+
+        /** Current number of elements in the stack. */
+        public int size() {
+            return top;
+        }
+
+        /** Optional add‑on: clears the entire stack. */
+        public void clear() {
+            for (int i = 0; i < top; i++) data[i] = null;
+            top = 0;
+        }
     }
 
+    /* ------------------------------------------------------------
+       Simple demo showing basic stack behavior (same as spec).
+       ------------------------------------------------------------ */
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        DishStack stack = new DishStack();
+        Dish oneDish   = new Dish("A dish with one fish pattern on it");
+        Dish twoDish   = new Dish("A dish with two fish patterns on it");
+        Dish redDish   = new Dish("A dish with a red fish pattern on it");
+        Dish blueDish  = new Dish("A dish with a blue fish pattern on it");
+
+        // size should be 0
+        System.out.println("Initial size: " + stack.size());
+
+        stack.push(oneDish);
+        stack.push(twoDish);
+        stack.push(redDish);
+        stack.push(blueDish);
+
+        // size should be 4
+        System.out.println("Size after pushes: " + stack.size());
+
+        // peek (blue dish)
+        System.out.println("Peek: " + stack.peek());
+
+        // pop blue, then red
+        System.out.println("Pop 1: " + stack.pop());
+        System.out.println("Pop 2: " + stack.pop());
+
+        // size should be 2
+        System.out.println("Final size: " + stack.size());
     }
 }
